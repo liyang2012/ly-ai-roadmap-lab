@@ -68,22 +68,27 @@ async def run_token_usage_analysis():
         try:
             result = await Runner.run(agent, question)
             
-            # 提取 token usage
-            usage = result.usage
-            prompt_tokens = usage.prompt_tokens if hasattr(usage, 'prompt_tokens') else 0
-            completion_tokens = usage.completion_tokens if hasattr(usage, 'completion_tokens') else 0
-            total_tokens = usage.total_tokens if hasattr(usage, 'total_tokens') else 0
+            # 提取 token usage（从 raw_responses 中汇总）
+            total_prompt_tokens = 0
+            total_completion_tokens = 0
+            total_all_tokens = 0
+            
+            for response in result.raw_responses:
+                usage = response.usage
+                total_prompt_tokens += usage.input_tokens if hasattr(usage, 'input_tokens') else 0
+                total_completion_tokens += usage.output_tokens if hasattr(usage, 'output_tokens') else 0
+                total_all_tokens += usage.total_tokens if hasattr(usage, 'total_tokens') else 0
             
             all_results.append({
                 "id": i,
                 "question": question,
-                "prompt_tokens": prompt_tokens,
-                "completion_tokens": completion_tokens,
-                "total_tokens": total_tokens,
-                "ratio": f"{completion_tokens/prompt_tokens:.2f}" if prompt_tokens > 0 else "N/A"
+                "prompt_tokens": total_prompt_tokens,
+                "completion_tokens": total_completion_tokens,
+                "total_tokens": total_all_tokens,
+                "ratio": f"{total_completion_tokens/total_prompt_tokens:.2f}" if total_prompt_tokens > 0 else "N/A"
             })
             
-            print(f"  Prompt: {prompt_tokens:4d} | Completion: {completion_tokens:4d} | Total: {total_tokens:4d} | Ratio: {completion_tokens/prompt_tokens:.2f}" if prompt_tokens > 0 else "  N/A")
+            print(f"  Prompt: {total_prompt_tokens:4d} | Completion: {total_completion_tokens:4d} | Total: {total_all_tokens:4d} | Ratio: {total_completion_tokens/total_prompt_tokens:.2f}" if total_prompt_tokens > 0 else "  N/A")
             
         except Exception as e:
             print(f"  ❌ 错误：{e}")

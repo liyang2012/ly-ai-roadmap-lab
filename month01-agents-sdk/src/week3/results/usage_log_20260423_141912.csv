@@ -1,0 +1,11 @@
+id,question,prompt_tokens,completion_tokens,total_tokens,ratio
+1,帮我查一下订单 ORD20260417001 的状态,0,0,0,ERROR
+2,ORD20260417002 发货了吗？,0,0,0,ERROR
+3,已发货的订单能退款吗？,0,0,0,ERROR
+4,退款需要什么条件？,0,0,0,ERROR
+5,我要申请退款，订单 ORD20260417001，七天无理由,0,0,0,ERROR
+6,帮我查一下物流 SF1234567890,0,0,0,ERROR
+7,我的包裹到哪了？物流单号 JD9876543210,0,0,0,ERROR
+8,我有哪些优惠券？用户 ID 是 USER001,0,0,0,ERROR
+9,iPhone 的保修政策是什么？,0,0,0,ERROR
+10,我要投诉！服务态度太差了！,0,0,0,ERROR
