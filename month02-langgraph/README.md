@@ -70,7 +70,7 @@ month02-langgraph/
 
 | 周 | 任务 | 状态 | 用时 |
 |----|------|------|------|
-| Week 1 | Graph API 入门 | ⬜ 待开始 | __h |
+| Week 1 | Graph API 入门 | ✅ 已完成 | ~1.5h |
 | Week 2 | Persistence / Checkpoints | ⬜ 待开始 | __h |
 | Week 3 | Subgraph 与模块化 | ⬜ 待开始 | __h |
 | Week 4 | Workflow vs Agent 选型 | ⬜ 待开始 | __h |
