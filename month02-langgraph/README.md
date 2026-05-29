@@ -24,10 +24,11 @@ month02-langgraph/
 │   │   └── customer_support_graph.py
 │   ├── week2/                         # Week 2: Persistence / Checkpoints
 │   │   └── checkpoint_demo.py
-│   ├── week3/                         # Week 3: Subgraph 与模块化
-│   │   └── subgraphs/
-│   │       ├── order_subgraph.py
-│   │       └── faq_subgraph.py
+│   ├── week3/                         # Week 3: Subgraph 与模块化 ✅
+│   │   ├── order_subgraph.py
+│   │   ├── faq_subgraph.py
+│   │   ├── master_graph.py
+│   │   └── week3_comprehensive_notes.md
 │   └── week4/                         # Week 4: Workflow vs Agent 选型
 ├── docs/
 │   ├── graph_design.md
@@ -71,11 +72,11 @@ month02-langgraph/
 | 周 | 任务 | 状态 | 用时 |
 |----|------|------|------|
 | Week 1 | Graph API 入门 | ✅ 已完成 | ~1.5h |
-| Week 2 | Persistence / Checkpoints | ⬜ 待开始 | __h |
-| Week 3 | Subgraph 与模块化 | ⬜ 待开始 | __h |
+| Week 2 | Persistence / Checkpoints | ✅ 已完成 (3 个文件全通) | ~3h |
+| Week 3 | Subgraph 与模块化 | ✅ 已完成 (3 个文件全通，11 个测试用例) | ~3h |
 | Week 4 | Workflow vs Agent 选型 | ⬜ 待开始 | __h |
 
-**总用时**: 预计 12 小时 | 实际：__h
+**总用时**: 预计 12 小时 | 实际：~7.5h
 
 ---
 
@@ -86,3 +87,20 @@ cd /Users/liyang/dev/python_project/ly-ai-roadmap-lab
 source venv/bin/activate
 pip install langgraph langchain-openai
 ```
+
+---
+
+## 📝 Week 3 补充说明 (2026-05-24)
+
+**已完成的代码文件**：
+- `src/week3/order_subgraph.py` — 订单处理子图（5 个节点）
+- `src/week3/faq_subgraph.py` — FAQ 子图（置信度路由）
+- `src/week3/master_graph.py` — 主图组合（11 个测试用例）
+- `src/week3/week3_comprehensive_notes.md` — 详细学习笔记
+
+**关键设计**：
+- 子图 = 编译后的 graph 作为节点添加到主图
+- State 共享：主图 State 是所有子图 State 的超集
+- 适配器模式：解决主图/子图字段不一致问题
+
+**下周**：Week 4 — Workflow vs Agent 选型对比

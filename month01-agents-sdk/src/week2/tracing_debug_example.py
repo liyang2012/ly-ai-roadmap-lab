@@ -39,8 +39,10 @@ load_dotenv()
 
 # 初始化百炼客户端
 client = AsyncOpenAI(
-    api_key=os.getenv("DASHSCOPE_API_KEY"),
-    base_url="https://coding.dashscope.aliyuncs.com/v1",
+    # 智谱 AI API Key，从环境变量读取
+    api_key=os.getenv("ZHIPUAI_API_KEY"),
+    # 智谱 AI API 地址
+    base_url="https://open.bigmodel.cn/api/coding/paas/v4",
 )
 
 
@@ -150,7 +152,7 @@ def create_order_agent_with_tracing():
 """
     
     agent = Agent(
-        model=OpenAIChatCompletionsModel(model="qwen3.5-plus", openai_client=client),
+        model=OpenAIChatCompletionsModel(model="glm-5.1", openai_client=client),
         name="订单查询助手",
         instructions=instructions,
         tools=[get_order]
@@ -239,7 +241,7 @@ def create_full_workflow_agent():
 """
     
     agent = Agent(
-        model=OpenAIChatCompletionsModel(model="qwen3.5-plus", openai_client=client),
+        model=OpenAIChatCompletionsModel(model="glm-5.1", openai_client=client),
         name="全能客服助手",
         instructions=instructions,
         tools=[get_order, query_logistics]
@@ -314,7 +316,7 @@ def create_debug_agent():
 """
     
     agent = Agent(
-        model=OpenAIChatCompletionsModel(model="qwen3.5-plus", openai_client=client),
+        model=OpenAIChatCompletionsModel(model="glm-5.1", openai_client=client),
         name="订单查询助手",
         instructions=instructions,
         tools=[get_order_with_error]
@@ -387,7 +389,7 @@ def create_performance_agent():
 """
     
     agent = Agent(
-        model=OpenAIChatCompletionsModel(model="qwen3.5-plus", openai_client=client),
+        model=OpenAIChatCompletionsModel(model="glm-5.1", openai_client=client),
         name="性能测试助手",
         instructions=instructions,
         tools=[slow_tool_1, fast_tool_1]

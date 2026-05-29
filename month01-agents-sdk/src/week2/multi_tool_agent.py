@@ -134,16 +134,16 @@ from agents.models.openai_chatcompletions import OpenAIChatCompletionsModel
 # 初始化兼容 OpenAI 格式的百炼客户端。
 # AsyncOpenAI 是用来发送网络请求的客户端组件。
 client = AsyncOpenAI(
-    # os.getenv(...) 是从操作系统的环境变量中获取值。
-    api_key=os.getenv("DASHSCOPE_API_KEY"),
-    # base_url 是网关地址，把大模型的请求指向阿里云百炼。
-    base_url="https://coding.dashscope.aliyuncs.com/v1",
+    # 智谱 AI API Key，从环境变量读取
+    api_key=os.getenv("ZHIPUAI_API_KEY"),
+    # 智谱 AI API 地址
+    base_url="https://open.bigmodel.cn/api/coding/paas/v4",
 )
 
 # 真正实例化并创建一个 Agent (客服助手) 对象。
 customer_service_agent = Agent(
-    # 1. model: 指定我们要使用的模型。百炼环境需要使用 OpenAIChatCompletionsModel 并传入我们的 client。
-    model=OpenAIChatCompletionsModel(model="qwen3.5-plus", openai_client=client),
+    # 1. model: 指定我们要使用的模型。智谱 AI 使用 glm-5.1 模型。
+    model=OpenAIChatCompletionsModel(model="glm-5.1", openai_client=client),
     
     # 2. name: 给智能体起一个名字，方便阅读和后台识别。
     name="客服助手",

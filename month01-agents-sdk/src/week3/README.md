@@ -53,63 +53,54 @@ week3/
 
 ---
 
-### Day 17-18: Token Usage 日志 ⬜ 待进行
+### Day 17-18: Token Usage 日志 ✅ 已完成
 
-**目标**: 记录并分析 10 次调用的 token 消耗
+**核心文件**: `day17_18_token_usage.py`
 
-**任务**:
-1. 读取 usage 数据（prompt_tokens, completion_tokens, total_tokens）
-2. 创建 `usage_log.csv`
-3. 记录 10 个问题的 token 消耗
-4. 分析哪个问题最费 token
+**测试结果** (输出: `results/usage_analysis_20260423_142325.md`):
 
-**输出文件**:
-- `results/usage_log.csv`
+| 指标 | 数值 |
+|------|------|
+| 总 Prompt Tokens | 25,495 |
+| 总 Completion Tokens | 3,114 |
+| 总消耗 | 28,609 |
+| 平均每题 | 2,861 tokens |
 
----
+**最费 Token**: 物流查询 (3,168 tokens) — 因为物流轨迹输出较长
+**最省 Token**: 退款条件 (1,534 tokens) — 直接回复，无需 Tool
 
-### Day 19-20: 错误样本集 ⬜ 待进行
-
-**目标**: 收集 10 条典型错误案例并分类
-
-**任务**:
-1. 从测试中找出 10 个错误
-2. 分类：prompt 问题 / schema 问题 / 其他
-3. 编写 `docs/error_cases.md`
-4. 每个错误加原因分析和修复方案
-
-**输出文件**:
-- `docs/error_cases.md`
+**关键发现**:
+- Completion/Prompt Ratio 全部 < 0.25，说明回复相对简洁
+- 物流和退款申请的 completion 最高（340+ tokens），需要 Tool 输出格式化数据
+- Instructions 精简空间有限（~2,600 tokens 基线）
 
 ---
 
-### Day 21-22: 优化 Instructions 和 Schema ⬜ 待进行
+### Day 19-20: 错误样本集 ✅ 部分完成
 
-**目标**: 针对性优化，提升准确率
+**核心文件**: `docs/error_cases.md`
 
-**任务**:
-1. 只改 instructions（不改 tool），测试 10 条
-2. 只改 schema（不改 instructions），测试 10 条
-3. 对比优化前后的准确率差异
-4. 记录优化技巧
+**已收集案例**: 1 个（检测逻辑缺陷）
 
-**输出文件**:
-- `docs/optimization_log.md`
+**核心发现**: 一致性测试 70% 一致率，但实际 Agent 行为更稳定。
+- 问题：`extract_tool()` 只匹配简单关键词，无法识别格式化变化
+- 3 个不一致问题：订单查询、退款条件、投诉转人工
+- **根因**: 检测代码不完善，不是 Agent 本身不稳定
+- **教训**: 不能仅凭输出文本判断 tool 调用，需要分析 trace 数据
+
+> ⚠️ 未完成：原计划收集 10 条真实错误案例，因 Day 19-23 整体跳过未继续。
 
 ---
 
-### Day 23: 创建 Mini Eval ⬜ 待进行
+### Day 21-22: 优化 Instructions 和 Schema ⬜ 已跳过
 
-**目标**: 建立可重复使用的评测表
+> 进入第 2 月后决定跳过剩余 Week 3 任务。核心教训（检测逻辑需依赖 trace）已在 MEMORY.md 中沉淀。
 
-**任务**:
-1. 设计 `eval/mini_eval.csv` 格式
-2. 编写 20 个问题（覆盖 4 类意图）
-3. 运行评测，统计 pass/fail
-4. 计算准确率（目标 > 80%）
+---
 
-**输出文件**:
-- `eval/mini_eval.csv`
+### Day 23: 创建 Mini Eval ⬜ 已跳过
+
+> LangGraph（Month 2）的 graph 模式天生具备显式流程控制，Month 1 的一致性率问题在 graph 模式下可避免。
 
 ---
 
@@ -138,7 +129,7 @@ week3/
 | Day 21-22 | 优化 Instructions/Schema | ⬜ 待进行 | __h |
 | Day 23 | Mini Eval | ⬜ 待进行 | __h |
 
-**总用时**: 预计 7.5 小时 | 实际：__h
+**总用时**: 预计 7.5 小时 | 实际：~1h（仅完成 Day 15-18，Day 19-23 跳过）
 
 ---
 
@@ -161,4 +152,4 @@ open month01-agents-sdk/src/week3/results/
 
 ---
 
-**下一步**: 继续 Day 17-18: Token Usage 日志分析
+**下一步**: 进入 Month 2（LangGraph），学习 Graph API 的 StateGraph 和条件路由

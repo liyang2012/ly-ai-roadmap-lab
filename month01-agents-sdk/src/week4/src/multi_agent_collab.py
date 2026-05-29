@@ -30,14 +30,16 @@ load_dotenv()
 # 禁用 Responses API，使用 Chat Completions
 set_use_responses_by_default(False)
 
-# 初始化阿里云百炼客户端
+# 初始化智谱 AI 客户端
 client = AsyncOpenAI(
-    api_key=os.getenv("DASHSCOPE_API_KEY"),
-    base_url="https://coding.dashscope.aliyuncs.com/v1",
+    # 智谱 AI API Key，从环境变量读取
+    api_key=os.getenv("ZHIPUAI_API_KEY"),
+    # 智谱 AI API 地址
+    base_url="https://open.bigmodel.cn/api/coding/paas/v4",
 )
 
 # 定义模型名称
-MODEL_NAME = "qwen3.6-plus"
+MODEL_NAME = "glm-5.1"
 
 
 # ============================================================

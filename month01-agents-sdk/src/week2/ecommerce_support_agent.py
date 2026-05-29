@@ -36,10 +36,10 @@ set_use_responses_by_default(False)
 # 初始化兼容 OpenAI 格式的百炼客户端。
 # AsyncOpenAI 是用来发送网络请求的客户端组件。
 client = AsyncOpenAI(
-    # os.getenv(...) 是从操作系统的环境变量中获取值。
-    api_key=os.getenv("DASHSCOPE_API_KEY"),
-    # base_url 是网关地址，把大模型的请求指向阿里云百炼。
-    base_url="https://coding.dashscope.aliyuncs.com/v1",
+    # 智谱 AI API Key，从环境变量读取
+    api_key=os.getenv("ZHIPUAI_API_KEY"),
+    # 智谱 AI API 地址
+    base_url="https://open.bigmodel.cn/api/coding/paas/v4",
 )
 
 
@@ -418,7 +418,7 @@ def create_ecommerce_support_agent():
 """
     
     agent = Agent(
-        model=OpenAIChatCompletionsModel(model="qwen3.5-plus", openai_client=client),
+        model=OpenAIChatCompletionsModel(model="glm-5.1", openai_client=client),
         name="电商客服助手",
         instructions=instructions,
         tools=tools

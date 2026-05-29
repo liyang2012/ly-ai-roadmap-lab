@@ -31,8 +31,10 @@ load_dotenv()
 
 # 初始化百炼客户端
 client = AsyncOpenAI(
-    api_key=os.getenv("DASHSCOPE_API_KEY"),
-    base_url="https://coding.dashscope.aliyuncs.com/v1",
+    # 智谱 AI API Key，从环境变量读取
+    api_key=os.getenv("ZHIPUAI_API_KEY"),
+    # 智谱 AI API 地址
+    base_url="https://open.bigmodel.cn/api/coding/paas/v4",
 )
 
 
@@ -134,7 +136,7 @@ def create_order_query_agent():
 """
     
     agent = Agent(
-        model=OpenAIChatCompletionsModel(model="qwen3.5-plus", openai_client=client),
+        model=OpenAIChatCompletionsModel(model="glm-5.1", openai_client=client),
         name="订单查询助手",
         instructions=instructions,
         tools=[get_order]
@@ -215,7 +217,7 @@ def create_order_list_agent():
 """
     
     agent = Agent(
-        model=OpenAIChatCompletionsModel(model="qwen3.5-plus", openai_client=client),
+        model=OpenAIChatCompletionsModel(model="glm-5.1", openai_client=client),
         name="订单列表助手",
         instructions=instructions,
         tools=[get_all_orders]
@@ -288,7 +290,7 @@ def create_analytics_agent():
 """
     
     agent = Agent(
-        model=OpenAIChatCompletionsModel(model="qwen3.5-plus", openai_client=client),
+        model=OpenAIChatCompletionsModel(model="glm-5.1", openai_client=client),
         name="数据分析助手",
         instructions=instructions,
         tools=[generate_sales_report]

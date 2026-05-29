@@ -5,7 +5,7 @@ Week 4 - Day 24-25: 简单 Handoff 示例
 1. 理解 Agent 之间的手动交接模式
 2. 掌握 handoff() 函数的基本用法
 3. 验证上下文传递的正确性
-4. 使用阿里云 qwen3.6-plus 模型
+4. 使用智谱 AI glm-5.1 模型
 """
 
 import os
@@ -21,14 +21,16 @@ load_dotenv()
 # 禁用 Responses API，使用 Chat Completions
 set_use_responses_by_default(False)
 
-# 初始化阿里云百炼客户端
+# 初始化智谱 AI 客户端
 client = AsyncOpenAI(
-    api_key=os.getenv("DASHSCOPE_API_KEY"),
-    base_url="https://coding.dashscope.aliyuncs.com/v1",
+    # 智谱 AI API Key，从环境变量读取
+    api_key=os.getenv("ZHIPUAI_API_KEY"),
+    # 智谱 AI API 地址
+    base_url="https://open.bigmodel.cn/api/coding/paas/v4",
 )
 
-# 定义模型名称（如果 qwen3.6-plus 不可用，可以改为 qwen3.5-plus）
-MODEL_NAME = "qwen3.6-plus"
+# 定义模型名称
+MODEL_NAME = "glm-5.1"
 
 # ============================================================
 # 模式 1：简单 Handoff - 客服路由
