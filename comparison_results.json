@@ -1,0 +1,240 @@
+{
+  "workflow": {
+    "cases": [
+      {
+        "id": 1,
+        "type": "标准",
+        "avg_latency": 0.042057037353515625,
+        "total_tokens": 0,
+        "avg_nodes": 3.0,
+        "accuracy": 100.0,
+        "consistency": 100.0
+      },
+      {
+        "id": 2,
+        "type": "标准",
+        "avg_latency": 0.013637542724609375,
+        "total_tokens": 0,
+        "avg_nodes": 3.0,
+        "accuracy": 100.0,
+        "consistency": 100.0
+      },
+      {
+        "id": 3,
+        "type": "标准",
+        "avg_latency": 0.015592575073242188,
+        "total_tokens": 0,
+        "avg_nodes": 3.0,
+        "accuracy": 100.0,
+        "consistency": 100.0
+      },
+      {
+        "id": 4,
+        "type": "标准",
+        "avg_latency": 0.017976760864257812,
+        "total_tokens": 0,
+        "avg_nodes": 3.0,
+        "accuracy": 100.0,
+        "consistency": 100.0
+      },
+      {
+        "id": 5,
+        "type": "标准",
+        "avg_latency": 0.01583099365234375,
+        "total_tokens": 0,
+        "avg_nodes": 3.0,
+        "accuracy": 100.0,
+        "consistency": 100.0
+      },
+      {
+        "id": 6,
+        "type": "标准",
+        "avg_latency": 0.0110626220703125,
+        "total_tokens": 0,
+        "avg_nodes": 3.0,
+        "accuracy": 100.0,
+        "consistency": 100.0
+      },
+      {
+        "id": 7,
+        "type": "标准",
+        "avg_latency": 0.017261505126953125,
+        "total_tokens": 0,
+        "avg_nodes": 3.0,
+        "accuracy": 100.0,
+        "consistency": 100.0
+      },
+      {
+        "id": 8,
+        "type": "模糊",
+        "avg_latency": 0.012826919555664062,
+        "total_tokens": 0,
+        "avg_nodes": 3.0,
+        "accuracy": 100.0,
+        "consistency": 100.0
+      },
+      {
+        "id": 9,
+        "type": "模糊",
+        "avg_latency": 0.009059906005859375,
+        "total_tokens": 0,
+        "avg_nodes": 3.0,
+        "accuracy": 100.0,
+        "consistency": 100.0
+      },
+      {
+        "id": 10,
+        "type": "混合",
+        "avg_latency": 0.01392364501953125,
+        "total_tokens": 0,
+        "avg_nodes": 3.0,
+        "accuracy": 100.0,
+        "consistency": 100.0
+      }
+    ],
+    "summary": {
+      "标准": {
+        "avg_latency": 0.019059862409319197,
+        "avg_accuracy": 100.0,
+        "avg_consistency": 100.0
+      },
+      "模糊": {
+        "avg_latency": 0.010943412780761719,
+        "avg_accuracy": 100.0,
+        "avg_consistency": 100.0
+      },
+      "混合": {
+        "avg_latency": 0.01392364501953125,
+        "avg_accuracy": 100.0,
+        "avg_consistency": 100.0
+      }
+    }
+  },
+  "agent": {
+    "cases": [
+      {
+        "id": 1,
+        "type": "标准",
+        "avg_latency": 1026.208782196045,
+        "total_tokens": 1330,
+        "avg_nodes": 3.2,
+        "avg_llm_calls": 2.2,
+        "accuracy": 100.0,
+        "consistency": 80.0
+      },
+      {
+        "id": 2,
+        "type": "标准",
+        "avg_latency": 1093.8110828399658,
+        "total_tokens": 1250,
+        "avg_nodes": 3.0,
+        "avg_llm_calls": 2.0,
+        "accuracy": 100.0,
+        "consistency": 100.0
+      },
+      {
+        "id": 3,
+        "type": "标准",
+        "avg_latency": 973.7949848175049,
+        "total_tokens": 1250,
+        "avg_nodes": 3.0,
+        "avg_llm_calls": 2.0,
+        "accuracy": 100.0,
+        "consistency": 100.0
+      },
+      {
+        "id": 4,
+        "type": "标准",
+        "avg_latency": 1109.4354629516602,
+        "total_tokens": 1250,
+        "avg_nodes": 3.0,
+        "avg_llm_calls": 2.0,
+        "accuracy": 100.0,
+        "consistency": 100.0
+      },
+      {
+        "id": 5,
+        "type": "标准",
+        "avg_latency": 1071.5872287750244,
+        "total_tokens": 1250,
+        "avg_nodes": 3.0,
+        "avg_llm_calls": 2.0,
+        "accuracy": 100.0,
+        "consistency": 100.0
+      },
+      {
+        "id": 6,
+        "type": "标准",
+        "avg_latency": 942.1281337738037,
+        "total_tokens": 1330,
+        "avg_nodes": 3.2,
+        "avg_llm_calls": 2.2,
+        "accuracy": 100.0,
+        "consistency": 80.0
+      },
+      {
+        "id": 7,
+        "type": "标准",
+        "avg_latency": 1094.0010070800781,
+        "total_tokens": 1330,
+        "avg_nodes": 3.2,
+        "avg_llm_calls": 2.2,
+        "accuracy": 100.0,
+        "consistency": 80.0
+      },
+      {
+        "id": 8,
+        "type": "模糊",
+        "avg_latency": 966.6987419128418,
+        "total_tokens": 1330,
+        "avg_nodes": 3.2,
+        "avg_llm_calls": 2.2,
+        "accuracy": 100.0,
+        "consistency": 80.0
+      },
+      {
+        "id": 9,
+        "type": "模糊",
+        "avg_latency": 1168.8515663146973,
+        "total_tokens": 1250,
+        "avg_nodes": 3.0,
+        "avg_llm_calls": 2.0,
+        "accuracy": 100.0,
+        "consistency": 100.0
+      },
+      {
+        "id": 10,
+        "type": "混合",
+        "avg_latency": 1019.7350978851318,
+        "total_tokens": 1250,
+        "avg_nodes": 3.0,
+        "avg_llm_calls": 2.0,
+        "accuracy": 0.0,
+        "consistency": 100.0
+      }
+    ],
+    "summary": {
+      "标准": {
+        "avg_latency": 1044.4238117762975,
+        "avg_accuracy": 100.0,
+        "avg_consistency": 91.42857142857143,
+        "avg_tokens": 1284.2857142857142,
+        "avg_llm_calls": 2.085714285714286
+      },
+      "模糊": {
+        "avg_latency": 1067.7751541137695,
+        "avg_accuracy": 100.0,
+        "avg_consistency": 90.0,
+        "avg_tokens": 1290.0,
+        "avg_llm_calls": 2.1
+      },
+      "混合": {
+        "avg_latency": 1019.7350978851318,
+        "avg_accuracy": 0.0,
+        "avg_consistency": 100.0,
+        "avg_tokens": 1250.0,
+        "avg_llm_calls": 2.0
+      }
+    }
+  }
+}

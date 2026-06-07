@@ -23,15 +23,16 @@ from agents import (
     Agent,
     Runner,
     function_tool,
-    InputGuardrail,
-    OutputGuardrail,
     GuardrailFunctionOutput,
 )
-from agents.guardrail import _input_guardrail, _output_guardrail
+from agents.guardrail import input_guardrail, output_guardrail
 from agents.models._openai_shared import set_use_responses_by_default
-from agents.models.openai_chatcompletions import OpenAIChatCompletions
+from agents.models.openai_chatcompletions import OpenAIChatCompletionsModel
 from openai import AsyncOpenAI
 from dotenv import load_dotenv
+
+# 禁用 OpenAI Agents SDK 内置 Tracing（避免向 api.openai.com 发送追踪数据）
+os.environ["OPENAI_AGENTS_DISABLE_TRACING"] = "true"
 
 # 加载环境变量
 load_dotenv()
@@ -52,7 +53,7 @@ client = AsyncOpenAI(
 # Guardrail 1: 输入长度限制
 # ============================================================
 
-@_input_guardrail
+@input_guardrail
 async def check_input_length(ctx, agent, input):
     """
     检查用户输入长度是否过长
@@ -81,7 +82,7 @@ async def check_input_length(ctx, agent, input):
 # Guardrail 2: 敏感词过滤
 # ============================================================
 
-@_input_guardrail
+@input_guardrail
 async def check_sensitive_words(ctx, agent, input):
     """
     检测输入中的敏感操作词汇
@@ -114,7 +115,7 @@ async def check_sensitive_words(ctx, agent, input):
 # Guardrail 3: 提示词注入检测
 # ============================================================
 
-@_input_guardrail
+@input_guardrail
 async def check_prompt_injection(ctx, agent, input):
     """
     检测提示词注入攻击
@@ -148,7 +149,7 @@ async def check_prompt_injection(ctx, agent, input):
 # Guardrail 4: 输出安全检查
 # ============================================================
 
-@_output_guardrail
+@output_guardrail
 async def check_output_safety(ctx, agent, output):
     """
     检查 Agent 输出的安全性
@@ -229,17 +230,17 @@ def create_guardrails_agent():
 """
     
     agent = Agent(
-        model=OpenAIChatCompletions(model="glm-5.1", openai_client=client),
+        model=OpenAIChatCompletionsModel(model="glm-5.1", openai_client=client),
         name="客服助手",
         instructions=instructions,
         tools=[query_order_with_validation],
         input_guardrails=[
-            InputGuardrail(guardrail_fn=check_input_length),
-            InputGuardrail(guardrail_fn=check_sensitive_words),
-            InputGuardrail(guardrail_fn=check_prompt_injection),
+            check_input_length,
+            check_sensitive_words,
+            check_prompt_injection,
         ],
         output_guardrails=[
-            OutputGuardrail(guardrail_fn=check_output_safety),
+            check_output_safety,
         ],
     )
     

@@ -23,6 +23,9 @@ from dotenv import load_dotenv
 from openai import AsyncOpenAI
 from agents.models.openai_chatcompletions import OpenAIChatCompletionsModel
 
+# 禁用 OpenAI Agents SDK 内置 Tracing（避免向 api.openai.com 发送追踪数据）
+os.environ["OPENAI_AGENTS_DISABLE_TRACING"] = "true"
+
 # 加载环境变量
 load_dotenv()
 

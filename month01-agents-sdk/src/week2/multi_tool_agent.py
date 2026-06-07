@@ -26,6 +26,9 @@ from agents.models._openai_shared import set_use_responses_by_default
 # dotenv 库用来从项目的 .env 文件读取环境变量，避免把密码、密钥等写死在代码里。
 from dotenv import load_dotenv
 
+# 禁用 OpenAI Agents SDK 内置 Tracing（避免向 api.openai.com 发送追踪数据）
+os.environ["OPENAI_AGENTS_DISABLE_TRACING"] = "true"
+
 # load_dotenv() 会自动寻找当前目录下的 .env 文件并加载它。
 load_dotenv()
 
