@@ -1,0 +1,24 @@
+{
+  "articles": [
+    {
+      "title": "如何搭建 RAG 系统",
+      "content": "RAG（检索增强生成）是当前最流行的知识库问答方案。核心思路是：将文档分割成块，转成向量存入向量数据库，查询时找到最相关的文档块，拼接到 Prompt 中让 LLM 回答。",
+      "author": "张三",
+      "date": "2026-03-01",
+      "tags": [
+        "RAG",
+        "Tutorial"
+      ]
+    },
+    {
+      "title": "LangChain 入门指南",
+      "content": "LangChain 是一个强大的 LLM 应用开发框架。它提供了 Document Loaders、Text Splitters、Vector Stores 等一系列工具，让开发者能快速构建 RAG 应用。",
+      "author": "李四",
+      "date": "2026-03-15",
+      "tags": [
+        "LangChain",
+        "Tutorial"
+      ]
+    }
+  ]
+}

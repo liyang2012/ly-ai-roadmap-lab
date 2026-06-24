@@ -13,7 +13,7 @@ try:
     )
 
     completion = client.chat.completions.create(
-        model="glm-5.1",  # 智谱 AI 模型名称
+        model="glm-5.2",  # 智谱 AI 模型名称
         messages=[
             {"role": "system", "content": "你是一个非常耐心的老师"},
             {"role": "user", "content": "你是谁？"},

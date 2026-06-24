@@ -1,0 +1,20 @@
+Python 学习笔记 - 2026年3月
+
+基础：
+1. 变量命名：小写+下划线，如 user_name
+2. 字符串操作：f-string 是最推荐的格式化方式
+3. 列表推导式：[x*2 for x in [1,2,3]] → [2,4,6]
+
+函数进阶：
+1. 默认参数：def greet(name, msg="你好"): ...
+2. *args / **kwargs：可变参数
+3. lambda 表达式：lambda x: x*2
+
+常用内置函数：
+- map(), filter(), reduce()
+- enumerate(), zip()
+- sorted(), reversed()
+
+文件操作：
+- with open('file.txt', 'r') as f:
+- 支持 r/w/a/rb/wb 等模式
