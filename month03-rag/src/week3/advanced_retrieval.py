@@ -285,26 +285,32 @@ class HybridSearcher:
         self,
         vector_results: list[tuple[int, float]],
         bm25_results: list[tuple[int, float]],
-        k: int = 60,
     ) -> dict[int, float]:
         """
-        Reciprocal Rank Fusion (RRF)
+        Hybrid Score Fusion（归一化线性组合）
         
-        公式: RRF_score(d) = alpha * (1/(k + rank_vec(d))) + (1-alpha) * (1/(k + rank_bm25(d)))
+        公式: hybrid_score(d) = alpha * norm_vec(d) + (1-alpha) * norm_bm25(d)
         
-        k 是平滑参数（通常 60），防止除以很小的数
+        将两路分数分别归一化到 [0, 1]，再加权融合。
+        比 RRF 更直观：分数直接反映相关性，而不是仅依赖排名。
         """
-        scores = {}
+        scores: dict[int, float] = {}
         
-        # 向量检索排名贡献
-        for rank, (doc_idx, _) in enumerate(vector_results):
-            rrf = 1.0 / (k + rank + 1)
-            scores[doc_idx] = scores.get(doc_idx, 0.0) + self.alpha * rrf
+        # 向量分数归一化到 [0, 1]
+        vec_vals = [s for _, s in vector_results]
+        vec_min, vec_max = min(vec_vals, default=0.0), max(vec_vals, default=1.0)
+        vec_range = vec_max - vec_min if vec_max - vec_min > 1e-9 else 1.0
+        for doc_idx, raw in vector_results:
+            norm = (raw - vec_min) / vec_range
+            scores[doc_idx] = scores.get(doc_idx, 0.0) + self.alpha * norm
         
-        # BM25 排名贡献
-        for rank, (doc_idx, _) in enumerate(bm25_results):
-            rrf = 1.0 / (k + rank + 1)
-            scores[doc_idx] = scores.get(doc_idx, 0.0) + (1 - self.alpha) * rrf
+        # BM25 分数归一化到 [0, 1]
+        bm_vals = [s for _, s in bm25_results]
+        bm_min, bm_max = min(bm_vals, default=0.0), max(bm_vals, default=1.0)
+        bm_range = bm_max - bm_min if bm_max - bm_min > 1e-9 else 1.0
+        for doc_idx, raw in bm25_results:
+            norm = (raw - bm_min) / bm_range
+            scores[doc_idx] = scores.get(doc_idx, 0.0) + (1 - self.alpha) * norm
         
         return scores
     

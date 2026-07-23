@@ -13,12 +13,66 @@
 - 学会 Reranking、Hybrid Search 等进阶检索策略
 - 做出一个可用的知识库问答系统
 
+---
+
+## 🤔 开始之前：你需要知道什么？
+
+### 前置知识
+
+如果你是**完全的小白**，建议先花 20 分钟了解以下概念：
+
+| 概念 | 一句话解释 | 为什么需要知道 |
+|------|-----------|---------------|
+| LLM（大语言模型） | 如 ChatGPT、GLM 等 AI 对话系统 | RAG 的核心就是给 LLM "加外挂" |
+| Prompt（提示词） | 给 AI 的指令文本 | RAG 的关键步骤就是构造好的 Prompt |
+| API（接口） | 程序之间通信的方式 | 调用 LLM 和 Embedding 模型都通过 API |
+| Python 基础 | 变量、函数、类、pip 安装 | 所有代码都是 Python |
+| JSON | 一种数据格式 `{"key": "value"}` | 配置文件和文档格式 |
+
+### 前置条件
+
+```bash
+# 1. 确保 Ollama 正在运行（本地 Embedding 模型）
+ollama serve
+
+# 2. 下载中文 Embedding 模型（首次）
+ollama pull qwen3-embedding:4b
+
+# 3. 安装 Python 依赖
+pip install chromadb numpy requests ollama
+pip install langchain langchain-text-splitters langchain-community
+pip install pymupdf rank_bm25 python-dotenv
+```
+
+### 推荐学习路径
+
+```
+第 1 步：先读科普文档（doc/ 目录），建立整体认知
+  └── doc/RAG-Fundamentals.md        ← 从这里开始！
+  └── doc/Embedding-VectorDB.md      ← 理解"语义变数字"
+
+第 2 步：按 Week 顺序动手实践
+  └── Week 1：跑通第一个 RAG（硬编码小数据）
+  └── Week 2：处理真实文件 + 分块
+  └── Week 3：高级检索 + 评估
+  └── Week 4：整合成完整系统
+
+第 3 步：每周完成后读复盘笔记（week*_notes.md），加深理解
+```
+
+---
+
 ## 📁 目录结构
 
 ```
 month03-rag/
-├── README.md                    # 本月学习说明
-├── doc/                         # 学习文档
+├── README.md                    # 本月学习说明（本文件）
+├── doc/                         # 📖 科普文档（小白友好）
+│   ├── RAG-Fundamentals.md      #   RAG 入门科普 ← 从这里开始
+│   ├── Embedding-VectorDB.md    #   Embedding 和向量数据库
+│   ├── Document-Processing.md   #   文档处理和分块策略
+│   ├── Advanced-Retrieval.md    #   高级检索策略
+│   └── Build-RAG-System.md      #   搭建完整 RAG 系统
 ├── src/
 │   ├── week1/                   # Week 1: RAG 基础与向量检索
 │   ├── week2/                   # Week 2: 文档处理与分块策略

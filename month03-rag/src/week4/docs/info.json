@@ -1,0 +1,24 @@
+{
+  "name": "智能知识库问答系统",
+  "version": "1.0.0",
+  "description": "基于 RAG + Hybrid Search + Query Rewriting 的知识库问答系统",
+  "tech_stack": {
+    "embedding": "Ollama qwen3-embedding:4b",
+    "vector_db": "ChromaDB",
+    "llm": "DeepSeek Chat",
+    "language": "Python 3.11+"
+  },
+  "features": [
+    "多格式文档支持 (MD/HTML/TXT/PDF/JSON)",
+    "智能分块 (Markdown 标题感知 + 递归分块)",
+    "Hybrid Search (向量 + BM25 + RRF 融合)",
+    "Query Rewriting (关键词提取 + 子问题拆解)",
+    "交互式 CLI 问答",
+    "来源追溯"
+  ],
+  "dependencies": {
+    "chromadb": ">=0.4.0",
+    "requests": ">=2.28.0",
+    "PyMuPDF": ">=1.23.0"
+  }
+}
