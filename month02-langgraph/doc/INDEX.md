@@ -12,18 +12,50 @@
 
 每个 Week 都有详细的笔记和可运行的代码：
 
-| Week | 主题 | 文件位置 |
-|------|------|---------|
-| Week 1 | Graph API 入门 | `src/week1/` |
-| Week 2 | Persistence / Checkpoints | `src/week2/` |
-| Week 3 | Subgraph 与模块化 | `src/week3/` |
-| Week 4 | Workflow vs Agent 选型 | `src/week4/`（待完成） |
+| Week | 主题 | 文件位置 | 详细文档 |
+|------|------|---------|----------|
+| Week 1 | Graph API 入门 | `src/week1/` | [Week1-Graph-API-Basics.md](./Week1-Graph-API-Basics.md) |
+| Week 2 | Persistence / Checkpoints | `src/week2/` | [Week2-Persistence-Checkpoints.md](./Week2-Persistence-Checkpoints.md) |
+| Week 3 | Subgraph 与模块化 | `src/week3/` | [Week3-Subgraph-Modular.md](./Week3-Subgraph-Modular.md) |
+| Week 4 | Workflow vs Agent 选型 | `src/week4/` | [Week4-Workflow-vs-Agent.md](./Week4-Workflow-vs-Agent.md) |
 
 ---
 
 ## 📖 核心文档
 
-### 1. [Week3-Subgraph-Modular.md - Subgraph 与模块化设计](./Week3-Subgraph-Modular.md)
+### 1. [Week1-Graph-API-Basics.md - Graph API 入门](./Week1-Graph-API-Basics.md)
+
+**适合人群**：完全没接触过 LangGraph 的新手
+
+**你将学到**：
+- ✅ LangGraph 是什么（和 Agents SDK 有什么不同）
+- ✅ 四大核心组件（State、Node、Edge、Compile）
+- ✅ 构建简单线性 Graph（3 个节点）
+- ✅ 条件路由（根据意图走不同分支）
+- ✅ 实战电商客服（8 个业务节点）
+- ✅ 常见踩坑（意图优先级、关键词匹配）
+
+**预计时间**：1-1.5 小时
+
+---
+
+### 2. [Week2-Persistence-Checkpoints.md - 持久化与人工审核](./Week2-Persistence-Checkpoints.md)
+
+**适合人群**：已掌握 Week 1 基础的学习者
+
+**你将学到**：
+- ✅ MemorySaver — 让 Graph "有记忆"，支持多轮对话
+- ✅ Thread ID — 会话隔离（不同用户互不干扰）
+- ✅ Checkpoint — 状态快照（像游戏存档）
+- ✅ Human-in-the-Loop — 关键步骤暂停等人工审批
+- ✅ Time Travel — 回到过去重新执行
+- ✅ 常见踩坑（StateSnapshot API 变化、as_node 参数 bug）
+
+**预计时间**：2-2.5 小时
+
+---
+
+### 3. [Week3-Subgraph-Modular.md - Subgraph 与模块化设计](./Week3-Subgraph-Modular.md)
 
 **适合人群**：想学习 LangGraph 子图设计的人
 
@@ -37,6 +69,22 @@
 - ✅ 设计原则总结
 
 **预计时间**：1.5 小时
+
+---
+
+### 4. [Week4-Workflow-vs-Agent.md - Workflow vs Agent 选型对比](./Week4-Workflow-vs-Agent.md)
+
+**适合人群**：已学完 Week 1-3 的 LangGraph 使用者
+
+**你将学到**：
+- ✅ Workflow 和 Agent 的根本区别
+- ✅ 量化对比实验数据（延迟、Token、准确率、一致率）
+- ✅ 意图重叠冲突（Intent Collision）问题
+- ✅ 选型决策树（什么场景用什么方案）
+- ✅ 混合架构（Hybrid）—— 工业界最佳实践
+- ✅ Token 隐性成本计算
+
+**预计时间**：1.5-2 小时
 
 ---
 
@@ -101,14 +149,20 @@
 ## 🔍 按主题查找
 
 ### 想了解"StateGraph 基础"
+→ [Week1-Graph-API-Basics.md](./Week1-Graph-API-Basics.md)
 → Week 1 源码和笔记
 
 ### 想了解"Checkpoint 和持久化"
+→ [Week2-Persistence-Checkpoints.md](./Week2-Persistence-Checkpoints.md)
 → Week 2 源码和笔记
 
 ### 想了解"Subgraph 子图"
 → [Week3-Subgraph-Modular.md](./Week3-Subgraph-Modular.md)
 → Week 3 源码
+
+### 想了解"Workflow vs Agent 选型"
+→ [Week4-Workflow-vs-Agent.md](./Week4-Workflow-vs-Agent.md)
+→ Week 4 源码
 
 ### 想了解"State 共享机制"
 → [Week3-Subgraph-Modular.md - State 共享机制](./Week3-Subgraph-Modular.md#2-state-共享机制)
@@ -225,6 +279,7 @@ LangGraph 知识体系
 |------|---------|--------|
 | 2026-05-23 | 创建 Week3-Subgraph-Modular.md | AI Assistant |
 | 2026-05-23 | 创建 LangGraph INDEX.md | AI Assistant |
+| 2026-06-29 | 新增 Week1/Week2/Week4 详细文档，补充 INDEX.md 链接 | AI Assistant |
 
 ---
 

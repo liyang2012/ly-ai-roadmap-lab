@@ -187,12 +187,18 @@ messages = [{"role": "user", "content": "北京天气咋样"}]
 # 第 2 步：发送给 AI（带 tools 参数）
 response = client.chat.completions.create(
     model="glm-5.1",  # 智谱 AI 模型名称
+    extra_body={"enable_thinking": False},  # 关闭模型的思考模式
     messages=messages,
     tools=tools  # 告诉 AI 有哪些工具可用
 )
 
 # 第 3 步：检查是否需要调用工具
 assistant_output = response.choices[0].message
+
+# ❗ 关键细节：assistant 消息也要追加到 messages
+messages.append(assistant_output)
+# 为什么？因为后续工具调用需要完整的对话上下文
+# AI 需要看到自己之前说过什么，才能正确总结工具结果
 
 if assistant_output.tool_calls is None:
     # 不需要工具，直接输出
@@ -232,8 +238,38 @@ else:
 
 **关键点**：
 - `while` 循环：支持多次工具调用（如先查订单，再查物流）
-- `messages.append(tool_message)`：保持对话上下文
+- `messages.append(assistant_output)`：助手消息也要追加！保持对话上下文完整
+- `messages.append(tool_message)`：工具结果也要追加
 - 第二次调用 AI 时，它能看到工具结果，从而生成更准确的回答
+
+#### 两个容易忽略的细节
+
+**细节 1：`enable_thinking` 参数**
+
+```python
+response = client.chat.completions.create(
+    model="glm-5.1",
+    extra_body={"enable_thinking": False},  # 关闭思考模式
+    messages=messages,
+    tools=tools,
+)
+```
+
+- 智谱 AI 的 `glm-5.1` 模型默认开启"思考模式"，会在回答前先输出一段内部思考
+- 关闭它可以避免干扰工具调用解析（思考内容会混入 tool_calls）
+- 实际代码在 `src/week1/loop_agent_tools.py` 第 54 行
+
+**细节 2：`messages.append(assistant_output)` 的重要性**
+
+```python
+assistant_output = response.choices[0].message
+messages.append(assistant_output)  # ← 这行不能忘！
+```
+
+很多新手会忘记把 AI 的回复也追加到 messages 中。但实际上：
+- 工具调用时，AI 需要看到自己的"决定调用工具"的消息
+- 否则对话上下文不完整，可能导致 AI 生成混乱的回复
+- 实际代码在 `src/week1/loop_agent_tools.py` 第 66 行和第 93 行（循环内也有一处）
 
 ---
 

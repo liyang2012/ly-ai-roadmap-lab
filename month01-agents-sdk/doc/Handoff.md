@@ -580,10 +580,15 @@ asyncio.run(main())
 async def debug_handoff():
     result = await Runner.run(triage_agent, "我要退款")
     
-    # 查看完整轨迹
+    # 查看最终回复
     print(f"最终输出：{result.final_output}")
-    print(f"使用的 Agent：{result.agent.name}")
-    print(f"是否发生 Handoff：{result.handoffs}")
+    
+    # 查看最终是哪个 Agent 处理的（重要！）
+    print(f"最终处理 Agent：{result.last_agent.name}")
+    # 可能的输出：
+    # - "TriageAgent" → 没有发生转交，TriageAgent 自己回答了
+    # - "SupportAgent" → 转交给了 SupportAgent
+    # - "FAQAgent" → 转交给了 FAQAgent
 ```
 
 ### 2. 检查 Handoff 配置
@@ -610,8 +615,75 @@ for query in test_cases:
     result = await Runner.run(triage_agent, query)
     print(f"问题：{query}")
     print(f"回答：{result.final_output}")
-    print(f"是否转交：{'是' if result.handoffs else '否'}")
+    print(f"处理 Agent：{result.last_agent.name}")  # 查看谁处理的
     print()
+```
+
+---
+
+## 🔁 单 Agent vs 多 Agent：两种方式解决同一个问题
+
+### 问题：我该用哪种方式？
+
+项目中有一个对比学习的例子：
+- `ecommerce_support_agent.py` = 单 Agent + 7 个工具（集中式）
+- `handoff_example.py` = 多 Agent + Handoff（分布式）
+
+### 对比图解
+
+```
+方式 A：单 Agent + 多 Tool（集中式）
+┌───────────────────────────────────┐
+│  一个"全能"客服 Agent              │
+│  带 7 个工具                      │
+│  Instructions 很长（什么都要会） │
+│  AI 要从 7 个工具中选择          │
+└───────────────────────────────────┘
+
+方式 B：多 Agent + Handoff（分布式）
+┌──────────────┐
+│  TriageAgent │ ← 只负责分类，不处理问题
+└──────┬───────┘
+       │
+       ├──→ SupportAgent（订单/退款专家，3 个工具）
+       ├──→ FAQAgent（常见问题，1 个工具）
+       └──→ EscalationAgent（人工转接，1 个工具）
+```
+
+### 详细对比
+
+| 对比维度 | 单 Agent（方式 A） | 多 Agent（方式 B） |
+|---------|-------------------|-------------------|
+| Instructions 长度 | 很长（什么都要写） | 每个都很短（只写自己的） |
+| 工具数量 | 7 个（AI 可能选错） | 1-3 个（选择更少更准） |
+| 职责清晰度 | 低（全挤在一起） | 高（各管各的） |
+| 维护难度 | 高（改一处影响全部） | 低（改一个不影响其他） |
+| 延迟 | 低（只有一次 LLM 调用） | 较高（需要两次调用：分类 + 处理） |
+| 适用场景 | 简单场景、快速原型 | 生产环境、复杂业务 |
+
+### 什么时候用哪种？
+
+**用单 Agent 当：**
+- 工具数量 ≤ 3 个
+- 业务逻辑简单
+- 快速原型验证
+- 对延迟要求高
+
+**用多 Agent 当：**
+- 工具数量 > 5 个
+- 业务逻辑复杂，需要多个专家
+- 需要清晰的职责划分
+- 团队协作开发（每人负责一个 Agent）
+
+### 验证 Handoff 是否成功
+
+```python
+# 用 result.last_agent.name 检查最终处理 Agent
+result = await Runner.run(triage_agent, "我的订单 ORD1001 到哪了？")
+print(result.last_agent.name)  # 输出：SupportAgent
+
+# 如果输出是 TriageAgent，说明没有发生 Handoff
+# 如果输出是 SupportAgent/FAQAgent/EscalationAgent，说明 Handoff 成功
 ```
 
 ---

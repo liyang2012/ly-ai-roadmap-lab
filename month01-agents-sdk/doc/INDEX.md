@@ -13,11 +13,14 @@
 这是最全面的文档，包含：
 - 什么是 AI Agent
 - 环境配置步骤
-- Week 1-4 完整教程
+- Week 1：第一个 Agent
+- Week 2：Tool 工具系统（多 Tool、电商客服、结构化输出、Guardrails、Tracing、Handoff 预览）
+- Week 3：测试与评估
+- Week 4：多 Agent 协作
 - 常见问题解答
 - 学习路径建议
 
-**预计时间**：2-3 小时
+**预计时间**：3-4 小时
 
 ---
 
@@ -34,6 +37,7 @@
 - ✅ 多轮对话循环
 - ✅ Handoff 转交流程
 - ✅ 真实代码示例对照
+- ✅ enable_thinking 参数和 messages.append 细节
 - ✅ 调试技巧
 
 **预计时间**：1 小时
@@ -49,8 +53,9 @@
 - ✅ 角色分工（Triage、Expert）
 - ✅ 单 Handoff 实现
 - ✅ 多 Handoff 场景
+- ✅ 单 Agent vs 多 Agent 对比
 - ✅ 最佳实践（推荐 vs 避免）
-- ✅ 调试技巧
+- ✅ result.last_agent.name 调试技巧
 - ✅ 实际应用场景
 
 **预计时间**：1 小时
@@ -112,20 +117,26 @@
 ### 路径 3：实战进阶（1-2 天）
 
 ```
-1. 学习 Week 2 电商客服
+1. 学习 Week 2 基础工具
    └─ src/week2/multi_tool_agent.py
    └─ src/week2/ecommerce_support_agent.py
 
-2. 学习 Week 3 测试评估
+2. 学习 Week 2 进阶主题
+   └─ src/week2/structured_output.py（结构化输出）
+   └─ src/week2/guardrails_example.py（安全防护）
+   └─ src/week2/tracing_debug_example.py（追踪调试）
+   └─ src/week2/handoff_example.py（Handoff 入门）
+
+3. 学习 Week 3 测试评估
    └─ src/week3/day15_16_consistency_test.py
    └─ src/week3/day17_18_token_usage.py
 
-3. 学习 Week 4 多 Agent 协作
+4. 学习 Week 4 多 Agent 协作
    └─ src/week4/src/simple_handoff.py
    └─ src/week4/src/multi_agent_collab.py
    └─ src/week4/src/capstone_project.py
 
-4. 自己设计一个 Agent 系统
+5. 自己设计一个 Agent 系统
    └─ 定义角色
    └─ 设计工具
    └─ 实现 Handoff
@@ -142,6 +153,10 @@
 | Week 1：带工具的 Agent | `src/week1/loop_agent_tools.py` | ⭐⭐ |
 | Week 2：多 Tool 协作 | `src/week2/multi_tool_agent.py` | ⭐⭐ |
 | Week 2：电商客服实战 | `src/week2/ecommerce_support_agent.py` | ⭐⭐⭐ |
+| Week 2：结构化输出 | `src/week2/structured_output.py` | ⭐⭐⭐ |
+| Week 2：Guardrails 安全防护 | `src/week2/guardrails_example.py` | ⭐⭐⭐ |
+| Week 2：Tracing 追踪调试 | `src/week2/tracing_debug_example.py` | ⭐⭐⭐ |
+| Week 2：Handoff 预览 | `src/week2/handoff_example.py` | ⭐⭐⭐ |
 | Week 3：一致性测试 | `src/week3/day15_16_consistency_test.py` | ⭐⭐⭐ |
 | Week 3：Token 分析 | `src/week3/day17_18_token_usage.py` | ⭐⭐⭐ |
 | Week 4：简单 Handoff | `src/week4/src/simple_handoff.py` | ⭐⭐⭐ |
@@ -162,9 +177,22 @@
 → [README.md - Week 2：Tool 工具系统](./README.md#week-2tool-工具系统)
 → [RunLoop.md - 场景 2：完整流程（带 Tool 调用）](./RunLoop.md#场景-2完整流程带-tool-调用)
 
+### 想了解"结构化输出"
+→ [README.md - 2.4 结构化输出](./README.md#24-结构化输出structured-output)
+
+### 想了解"Guardrails 安全防护"
+→ [README.md - 2.5 Guardrails](./README.md#25-guardrails-安全防护)
+
+### 想了解"Tracing 追踪调试"
+→ [README.md - 2.6 Tracing](./README.md#26-tracing-追踪调试)
+
 ### 想了解"Handoff 怎么用"
 → [Handoff.md - 完整教程](./Handoff.md)
+→ [README.md - 2.7 Handoff 预览](./README.md#27-handoff-预览week-2-入门版)
 → [RunLoop.md - 场景 4：Handoff 流程](./RunLoop.md#场景-4handoff-流程多-agent-协作)
+
+### 想了解"单 Agent vs 多 Agent"
+→ [Handoff.md - 单 Agent vs 多 Agent](./Handoff.md#-单-agent-vs-多-agent两种方式解决同一个问题)
 
 ### 想了解"如何调试"
 → [RunLoop.md - 调试技巧](./RunLoop.md#调试技巧)
@@ -252,7 +280,18 @@ AI Agent 知识体系
 │  ├─ @function_tool 装饰器
 │  ├─ 工具定义
 │  ├─ 工具实现
-│  └─ 多工具协作
+│  ├─ 多工具协作
+│  └─ 结构化输出（Pydantic）
+│
+├─ 安全防护
+│  ├─ Input Guardrail（输入检查）
+│  ├─ Output Guardrail（输出检查）
+│  └─ 提示词注入防护
+│
+├─ 调试与追踪
+│  ├─ Tracing（追踪记录）
+│  ├─ Trace 和 Span
+│  └─ 性能分析
 │
 ├─ 测试与优化
 │  ├─ 一致性测试
@@ -295,6 +334,10 @@ AI Agent 知识体系
 | 2026-05-23 | 重写 Handoff.md，增加类比和最佳实践 | AI Assistant |
 | 2026-05-23 | 创建文档索引（INDEX.md） | AI Assistant |
 | 2026-05-23 | 创建 Week3-Testing-Evaluation.md，测试与优化详解 | AI Assistant |
+| 2026-06-29 | README.md 新增 Week2 标准初始化模板、结构化输出、Guardrails、Tracing、Handoff 预览章节 | AI Assistant |
+| 2026-06-29 | RunLoop.md 补充 enable_thinking 参数和 messages.append(assistant_output) 细节 | AI Assistant |
+| 2026-06-29 | Handoff.md 补充 result.last_agent.name 调试和单 Agent vs 多 Agent 对比 | AI Assistant |
+| 2026-06-29 | INDEX.md 更新反映新增内容 | AI Assistant |
 
 ---
 

@@ -10,6 +10,13 @@
 2. [环境准备](#环境准备)
 3. [Week 1：第一个 Agent](#week-1第一个-agent)
 4. [Week 2：Tool 工具系统](#week-2tool-工具系统)
+   - 2.1 多 Tool 协作
+   - 2.2 电商客服 Agent 实战
+   - 2.3 Week 2 标准初始化模板
+   - 2.4 结构化输出（Structured Output）
+   - 2.5 Guardrails 安全防护
+   - 2.6 Tracing 追踪调试
+   - 2.7 Handoff 预览
 5. [Week 3：测试与评估](#week-3测试与评估)
 6. [Week 4：多 Agent 协作](#week-4多-agent-协作)
 7. [常见问题解答](#常见问题解答)
@@ -401,7 +408,7 @@ python ecommerce_support_agent.py --test
 python ecommerce_support_agent.py
 ```
 
-然后输入你的问题，例如：
+后输入你的问题，例如：
 ```
 👤 您：帮我查一下订单 ORD20260417001 的状态
 🤖 客服：📦 订单详情
@@ -411,6 +418,501 @@ python ecommerce_support_agent.py
 金额：¥7,999.00
 状态：已发货
 ...
+```
+
+---
+
+### 2.3 Week 2 标准初始化模板
+
+**重要**：Week 2 的每个文件都有一段通用的初始化代码，在开始学习具体主题之前，先理解这段"模板代码"。
+
+```python
+# ===== 第 1 步：禁用 SDK 内置 Tracing =====
+import os
+os.environ["OPENAI_AGENTS_DISABLE_TRACING"] = "true"
+# 为什么？SDK 默认会把追踪数据发送到 api.openai.com
+# 我们用的是智谱 AI，不需要这个，所以关掉
+
+# ===== 第 2 步：加载环境变量 =====
+from dotenv import load_dotenv
+load_dotenv()
+# 从 .env 文件读取 ZHIPUAI_API_KEY
+
+# ===== 第 3 步：禁用 Responses API =====
+from agents.models._openai_shared import set_use_responses_by_default
+set_use_responses_by_default(False)
+# 为什么？SDK 默认使用新的 Responses API，但智谱 AI 只支持标准的 Chat Completions
+# 所以必须关掉这个，否则会报错
+
+# ===== 第 4 步：创建客户端 =====
+from openai import AsyncOpenAI
+from agents.models.openai_chatcompletions import OpenAIChatCompletionsModel
+client = AsyncOpenAI(
+    api_key=os.getenv("ZHIPUAI_API_KEY"),
+    base_url="https://open.bigmodel.cn/api/coding/paas/v4",
+)
+# AsyncOpenAI 是异步客户端，支持 async/await
+# OpenAIChatCompletionsModel 是包装器，把客户端给 Agent 使用
+```
+
+#### 关键概念解释
+
+| 配置项 | 作用 | 如果不设置会怎样 |
+|--------|------|------------------|
+| `OPENAI_AGENTS_DISABLE_TRACING` | 关闭 SDK 内置追踪 | SDK 会尝试向 api.openai.com 发送追踪数据，导致报错 |
+| `set_use_responses_by_default(False)` | 使用标准 Chat Completions API | SDK 会使用 Responses API，智谱 AI 不支持，报错 |
+| `OpenAIChatCompletionsModel` | 把 AsyncOpenAI 客户端包装成 Agent 能用的模型 | Agent 不知道如何直接使用 AsyncOpenAI |
+
+#### 如何创建 Agent（Week 2 通用模式）
+
+```python
+from agents import Agent
+
+agent = Agent(
+    model=OpenAIChatCompletionsModel(model="glm-5.1", openai_client=client),
+    name="Agent 名称",
+    instructions="你是...（工作手册）",
+    tools=[tool1, tool2],           # 可选：工具列表
+    input_guardrails=[...],         # 可选：输入安全检查
+    output_guardrails=[...],        # 可选：输出安全检查
+    handoffs=[...],                 # 可选：可以转交给的其他 Agent
+)
+```
+
+---
+
+### 2.4 结构化输出（Structured Output）
+
+**文件位置**：`src/week2/structured_output.py`
+
+#### 为什么需要结构化输出？
+
+想象你是外卖平台，用户问"我的订单到哪了"：
+
+**方案 A：自由文本（人类能读，程序难处理）**
+```
+"您的订单 ORD001 已发货，商品是 iPhone 15 Pro，金额 7999 元，物流单号 SF123"
+```
+→ 前端 APP 很难从这段话中提取出订单号、金额等信息来显示
+
+**方案 B：结构化输出（JSON 格式，程序能直接解析）**
+```json
+{
+  "order_id": "ORD001",
+  "product_name": "iPhone 15 Pro",
+  "amount": 7999.00,
+  "status": "shipped",
+  "logistics_no": "SF123"
+}
+```
+→ 前端可以直接用 `data.order_id`、`data.amount` 来渲染界面
+
+#### Pydantic：定义数据结构的工具
+
+Pydantic 是 Python 的数据验证库，用来定义"数据长什么样"：
+
+```python
+from pydantic import BaseModel, Field
+from typing import Optional
+from enum import Enum
+
+# 定义枚举：订单状态只能是这几个值
+class OrderStatus(str, Enum):
+    PENDING = "pending"      # 待支付
+    PROCESSING = "processing" # 处理中
+    SHIPPED = "shipped"      # 已发货
+    DELIVERED = "delivered"  # 已签收
+    CANCELLED = "cancelled"  # 已取消
+
+# 定义订单结构
+class Order(BaseModel):
+    order_id: str = Field(description="订单号，例如：ORD20260417001")
+    product_name: str = Field(description="商品名称")
+    amount: float = Field(description="订单金额（元）")
+    status: OrderStatus = Field(description="订单状态")
+    logistics_no: Optional[str] = Field(default=None, description="物流单号（可选）")
+```
+
+**关键概念**：
+- `BaseModel`：Pydantic 的基类，继承它就变成了"数据结构定义"
+- `Field(description=...)`：字段描述，告诉 AI 这个字段是什么意思
+- `Optional[str]`：可选字段，可以没有值
+- `default=None`：默认值为 None
+
+#### 三个实战场景
+
+本文件包含 3 个场景，从简单到复杂：
+
+| 场景 | Agent 名称 | 功能 | 输出结构 |
+|------|-----------|------|----------|
+| 1. 单订单查询 | 订单查询助手 | 查询一个订单 | `Order` 对象 |
+| 2. 订单列表 | 订单列表助手 | 查询所有订单 | `OrderListResponse`（包含列表+统计） |
+| 3. 销售统计 | 数据分析助手 | 生成统计报告 | `SalesStatistics`（包含汇总数据） |
+
+#### Instructions 的关键写法
+
+要让 Agent 输出 JSON 格式，必须在 instructions 中明确要求：
+
+```python
+instructions = """
+你是一个订单查询助手。...
+
+【重要】你的最终输出必须是纯 JSON 格式，不要包含任何其他文本、
+解释或 markdown 代码块标记。
+
+输出的 JSON 必须符合以下结构：
+{
+  "order_id": "订单号",
+  "product_name": "商品名称",
+  "amount": 订单金额（数字）,
+  ...
+}
+"""
+```
+
+> 💡 **小白提示**：AI 默认会输出自然语言（人类读的文字），你必须明确告诉它"只输出 JSON"，否则它会夹杂解释文字。
+
+#### 如何解析 Agent 的输出
+
+```python
+import json
+
+# Agent 返回的是字符串
+output_text = result.final_output
+
+# 可能包含 markdown 代码块，需要提取
+if "```json" in output_text:
+    json_str = output_text.split("```json")[1].split("```")[0].strip()
+elif "```" in output_text:
+    json_str = output_text.split("```")[1].split("```")[0].strip()
+else:
+    json_str = output_text
+
+# 解析 JSON
+data = json.loads(json_str)
+print(data["order_id"])   # ORD20260417001
+print(data["amount"])     # 7999.0
+```
+
+#### 运行方式
+
+```bash
+cd src/week2
+python structured_output.py --test   # 运行测试
+python structured_output.py          # 交互模式
+```
+
+---
+
+### 2.5 Guardrails 安全防护
+
+**文件位置**：`src/week2/guardrails_example.py`
+
+#### Guardrails 是什么？
+
+**Guardrails = 安全护栏**，就像公路两边的护栏一样，防止 Agent "跑出轨道"。
+
+```
+用户输入 ──→ [Input Guardrail] ──→ Agent 处理 ──→ [Output Guardrail] ──→ 回复用户
+              ↑ 检查输入安全                      ↑ 检查输出安全
+              - 输入太长？                         - 泄露密码？
+              - 有敏感词？                         - 输出太长？
+              - 注入攻击？                         - 不当内容？
+```
+
+#### 为什么需要 Guardrails？
+
+| 问题 | 没有 Guardrails | 有 Guardrails |
+|------|-----------------|---------------|
+| 用户输入 10000 字 | 消耗大量 Token，浪费钱 | 拦截，提示输入过长 |
+| 用户说"删除全部数据" | Agent 可能执行危险操作 | 拦截，拒绝执行 |
+| 用户说"忽略所有指令" | Agent 可能被绕过（提示词注入） | 拦截，检测到注入攻击 |
+| Agent 输出包含 API Key | 敏感信息泄露 | 拦截，阻止输出 |
+
+#### 创建 Input Guardrail（输入安全检查）
+
+```python
+from agents import GuardrailFunctionOutput
+from agents.guardrail import input_guardrail
+
+@input_guardrail
+async def check_input_length(ctx, agent, input):
+    """检查用户输入是否过长"""
+    max_length = 500
+    text = input if isinstance(input, str) else str(input)
+    
+    if len(text) > max_length:
+        return GuardrailFunctionOutput(
+            output_info=f"输入过长（{len(text)} 字符）",
+            tripwire_triggered=True   # True = 触发拦截，Agent 不会处理
+        )
+    
+    return GuardrailFunctionOutput(
+        output_info="输入长度正常",
+        tripwire_triggered=False      # False = 安全，放行
+    )
+```
+
+**关键点**：
+- `@input_guardrail`：装饰器，标记这是输入检查
+- `GuardrailFunctionOutput`：检查结果
+- `tripwire_triggered=True`：触发警报，请求被拦截
+- `tripwire_triggered=False`：安全，继续处理
+
+#### 创建 Output Guardrail（输出安全检查）
+
+```python
+from agents.guardrail import output_guardrail
+
+@output_guardrail
+async def check_output_safety(ctx, agent, output):
+    """检查 Agent 输出是否安全"""
+    text = output if isinstance(output, str) else str(output)
+    
+    # 检查是否泄露敏感信息
+    sensitive_keywords = ["api_key", "password", "secret", "token"]
+    for keyword in sensitive_keywords:
+        if keyword.lower() in text.lower():
+            return GuardrailFunctionOutput(
+                output_info=f"输出包含敏感关键词：{keyword}",
+                tripwire_triggered=True
+            )
+    
+    return GuardrailFunctionOutput(
+        output_info="输出安全检查通过",
+        tripwire_triggered=False
+    )
+```
+
+#### 给 Agent 添加 Guardrails
+
+```python
+agent = Agent(
+    name="客服助手",
+    instructions="...",
+    tools=[...],
+    input_guardrails=[           # 输入检查列表（按顺序执行）
+        check_input_length,      # 1. 检查长度
+        check_sensitive_words,   # 2. 检查敏感词
+        check_prompt_injection,  # 3. 检查注入攻击
+    ],
+    output_guardrails=[          # 输出检查列表
+        check_output_safety,     # 1. 检查输出安全
+    ],
+)
+```
+
+#### 本文件包含的 4 个 Guardrail
+
+| Guardrail | 类型 | 作用 | 拦截场景 |
+|-----------|------|------|----------|
+| `check_input_length` | Input | 限制输入 ≤ 500 字符 | 防止超长输入浪费 Token |
+| `check_sensitive_words` | Input | 检测"删除全部""清空数据库"等 | 防止危险操作 |
+| `check_prompt_injection` | Input | 检测"忽略指令""你现在是"等 | 防止提示词注入攻击 |
+| `check_output_safety` | Output | 检测 API Key、密码等关键词 | 防止信息泄露 |
+
+#### 运行方式
+
+```bash
+cd src/week2
+python guardrails_example.py
+```
+
+#### 你会看到
+
+```
+【测试 1】正常输入 - 查询订单
+✅ 回复: 📦 订单 ORD001: iPhone 15 - 已发货
+
+【测试 2】超长输入 - 应该被拦截
+✅ 被 Guardrail 拦截: ...
+
+【测试 3】敏感词输入 - 应该被拦截
+✅ 被 Guardrail 拦截: ...
+
+【测试 4】提示词注入 - 应该被拦截
+✅ 被 Guardrail 拦截: ...
+```
+
+---
+
+### 2.6 Tracing 追踪调试
+
+**文件位置**：`src/week2/tracing_debug_example.py`
+
+#### Tracing 是什么？
+
+**Tracing = 追踪记录**，就像飞机的"黑匣子"，记录 Agent 执行过程中的每一步。
+
+```
+┌───────────────────────────────────────────┐
+│  Trace: "订单查询工作流"                    │
+│  ├── Span 1: 用户输入                      │
+│  ├── Span 2: Agent 思考（LLM 调用）        │
+│  │   └── 决定调用 get_order 工具           │
+│  ├── Span 3: 执行 Tool（get_order）        │
+│  │   └── 返回订单数据                      │
+│  ├── Span 4: Agent 生成回复（LLM 调用）    │
+│  │   └── 基于工具结果生成 JSON             │
+│  └── Span 5: 输出给用户                    │
+└───────────────────────────────────────────┘
+```
+
+**两个核心概念**：
+- **Trace**：一次完整的工作流（从用户输入到最终输出）
+- **Span**：工作流中的单个操作步骤
+
+#### 为什么需要 Tracing？
+
+| 用途 | 说明 |
+|------|------|
+| 🔍 调试 | 查看 Agent 为什么做出某个决策 |
+| 🐛 排错 | 定位 Tool 调用失败的原因 |
+| ⚡ 优化 | 找出哪个步骤最慢 |
+| 💰 成本 | 统计每次调用的 Token 消耗 |
+
+#### 如何使用 trace
+
+```python
+from agents import trace
+
+# 用 with 语句包裹整个工作流
+with trace("订单查询工作流", group_id="test_001") as t:
+    print(f"Trace ID: {t.trace_id}")
+    
+    # 运行 Agent
+    result = await Runner.run(agent, "查询订单 ORD001")
+    print(result.final_output)
+
+# with 块结束时，Trace 自动完成
+```
+
+**关键参数**：
+- `"订单查询工作流"`：Trace 名称，方便识别
+- `group_id="test_001"`：分组 ID，把相关的 Trace 归为一组
+- `t.trace_id`：唯一标识符，用于查找特定的 Trace
+
+#### 本文件包含的 4 个测试场景
+
+| 场景 | 功能 | 学习重点 |
+|------|------|----------|
+| 测试 1：基础 Tracing | 简单的订单查询 | trace 基本用法 |
+| 测试 2：多步骤工作流 | 订单 + 物流查询 | 多个 Tool 调用的追踪 |
+| 测试 3：错误调试 | 模拟数据库错误 | 用 Trace 定位异常 |
+| 测试 4：性能分析 | 对比快/慢工具 | 用 Trace 找性能瓶颈 |
+
+#### 运行方式
+
+```bash
+cd src/week2
+python tracing_debug_example.py --test   # 运行全部测试
+python tracing_debug_example.py          # 交互模式
+```
+
+#### Tracing 配置指南
+
+```bash
+# 环境变量控制
+export OPENAI_AGENTS_DISABLE_TRACING=true   # 完全禁用追踪
+export OPENAI_AGENTS_DONT_LOG_MODEL_DATA=false  # 允许记录模型输入输出
+export OPENAI_AGENTS_DONT_LOG_TOOL_DATA=false   # 允许记录工具调用数据
+```
+
+> 💡 **注意**：本项目中 `tracing_debug_example.py` 故意**没有**设置 `OPENAI_AGENTS_DISABLE_TRACING`，因为 Tracing 就是这个文件要演示的功能。
+
+---
+
+### 2.7 Handoff 预览（Week 2 入门版）
+
+**文件位置**：`src/week2/handoff_example.py`
+
+> 这是 Week 2 的 Handoff 入门，Week 4 会有更深入的学习。
+
+#### 单 Agent vs 多 Agent：两种方式解决同一个问题
+
+你已经学过 `ecommerce_support_agent.py`（2.2 节），它是一个 Agent 带 7 个工具。现在看看另一种方式：
+
+```
+方式 A：单 Agent + 多 Tool（ecommerce_support_agent.py）
+┌─────────────────────────────────┐
+│  一个"全能"客服 Agent            │
+│  带 7 个工具                    │
+│  Instructions 很长（什么都要会） │
+└─────────────────────────────────┘
+
+方式 B：多 Agent + Handoff（handoff_example.py）
+┌──────────────┐
+│  TriageAgent │ ← 只负责分类，不处理问题
+└──────┬───────┘
+       │
+       ├──→ SupportAgent（订单/退款专家，3 个工具）
+       ├──→ FAQAgent（常见问题，1 个工具）
+       └──→ EscalationAgent（人工转接，1 个工具）
+```
+
+| 对比维度 | 单 Agent（方式 A） | 多 Agent（方式 B） |
+|---------|-------------------|-------------------|
+| Instructions 长度 | 很长（什么都要写） | 每个都很短（只写自己的） |
+| 工具数量 | 7 个（AI 可能选错） | 1-3 个（选择更少更准） |
+| 职责清晰度 | 低（全挤在一起） | 高（各管各的） |
+| 维护难度 | 高（改一处影响全部） | 低（改一个不影响其他） |
+| 适用场景 | 简单场景、快速原型 | 生产环境、复杂业务 |
+
+#### 关键代码：handoff()
+
+```python
+from agents import handoff
+
+# 创建 TriageAgent，可以转交给 3 个专家
+triage_agent = Agent(
+    name="TriageAgent",
+    instructions="""你是分诊台，根据问题类型转交：
+    - 订单/退款 → SupportAgent
+    - 常见问题 → FAQAgent
+    - 投诉/人工 → EscalationAgent
+    """,
+    handoffs=[
+        handoff(support_agent),
+        handoff(faq_agent),
+        handoff(escalation_agent),
+    ],
+)
+```
+
+#### 验证 Handoff 是否成功
+
+```python
+result = await Runner.run(triage_agent, "我的订单 ORD1001 到哪了？")
+
+# 查看最终回复
+print(result.final_output)
+
+# 查看最终是哪个 Agent 处理的
+print(result.last_agent.name)  # 输出：SupportAgent
+```
+
+> 💡 `result.last_agent` 是检查 Handoff 是否成功的关键属性！
+
+#### 运行方式
+
+```bash
+cd src/week2
+python handoff_example.py --test   # 批量测试（验证路由是否正确）
+python handoff_example.py          # 交互模式
+```
+
+#### 测试模式输出示例
+
+```
+🧪 Handoff 路由测试
+✅ PASS | 用户: 我的订单 ORD1001 到哪了？
+         期望: SupportAgent | 实际: SupportAgent
+✅ PASS | 用户: 你们支持什么支付方式？
+         期望: FAQAgent | 实际: FAQAgent
+✅ PASS | 用户: 我要投诉
+         期望: EscalationAgent | 实际: EscalationAgent
+
+📊 测试结果: 9/9 通过, 0 失败
 ```
 
 ---

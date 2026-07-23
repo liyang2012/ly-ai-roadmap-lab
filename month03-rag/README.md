@@ -1,3 +1,162 @@
+# 📚 Month 03: RAG (检索增强生成) 学习指南
+
+> **学习目标**：掌握 RAG 核心技术，理解 Embedding、向量数据库、文档处理、高级检索等关键环节，能够构建完整的知识库问答系统。
+> 
+> **学习时间**：4 周，约 12-15 小时
+> 
+> **最后更新**：2026-07-13
+
+---
+
+## 📖 本月概览
+
+本月你将系统学习 RAG（Retrieval-Augmented Generation）技术，这是让 AI 具备"开卷考试"能力的关键技术。从基础的 Embedding 开始，逐步掌握文档处理、高级检索策略，最终构建完整的知识库问答系统。
+
+### 学习路线图
+
+```
+Week 1: Embedding + 向量库    Week 2: 文档处理          Week 3: 高级检索          Week 4: 完整 RAG 系统
+    ↓                          ↓                       ↓                       ↓
+[语义理解]              [文档加载]             [混合检索]              [系统集成]
+[向量数据库]            [分块策略]             [查询改写]              [生产级代码]
+[相似度计算]            [格式转换]             [重排序]                [完整功能]
+```
+
+---
+
+## 📚 周文档导航
+
+### Week 1：Embedding 与向量数据库
+
+**学习目标**：理解 Embedding 的核心原理，掌握向量数据库的使用，能够进行基础的语义检索。
+
+**核心内容**：
+- Embedding 概念和原理
+- 余弦相似度计算
+- ChromaDB 向量数据库
+- 语义检索 vs 关键词匹配
+- 中文 Embedding 模型选择
+
+**周文档**：[Week 1 详细文档](src/week1/week1_notes.md) | [Embedding 与向量数据库](doc/Embedding-VectorDB.md)
+
+**产出代码**：
+- `src/week1/embedding_demo.py` - Embedding 演示
+- `src/week1/chroma_basics.py` - ChromaDB 基础
+- `src/week1/simple_rag.py` - 简单 RAG Pipeline
+
+---
+
+### Week 2：文档处理与分块策略
+
+**学习目标**：掌握多种文档格式的加载方法，理解不同的分块策略，能够处理真实世界的文档。
+
+**核心内容**：
+- 多格式文档加载（MD/PDF/HTML/TXT/JSON）
+- 分块策略（固定长度、语义、标题感知）
+- 文档清洗和预处理
+- 元数据管理
+- 递归分块算法
+
+**周文档**：[Week 2 详细文档](src/week2/week2_notes.md) | [文档处理与分块策略](doc/Document-Processing.md)
+
+**产出代码**：
+- `src/week2/doc_loader.py` - 文档加载器
+- `src/week2/chunking_strategies.py` - 分块策略对比
+- `src/week2/multi_format_rag.py` - 多格式支持
+
+---
+
+### Week 3：高级检索策略
+
+**学习目标**：掌握高级检索技术，包括 Hybrid Search、Reranking、Query Rewriting，提升检索质量。
+
+**核心内容**：
+- Hybrid Search（向量 + BM25）
+- Reciprocal Rank Fusion (RRF)
+- Query Rewriting（查询改写）
+- Reranking（重排序）
+- 检索评估指标
+
+**周文档**：[Week 3 详细文档](src/week3/week3_notes.md) | [高级检索策略](doc/Advanced-Retrieval.md)
+
+**产出代码**：
+- `src/week3/advanced_retrieval.py` - 高级检索实现
+- `src/week3/query_rewriting.py` - 查询改写
+- `src/week3/evaluation_metrics.py` - 评估指标
+
+---
+
+### Week 4：完整 RAG 系统
+
+**学习目标**：整合前 3 周的技术，构建生产级的知识库问答系统。
+
+**核心内容**：
+- 完整的系统架构设计
+- Indexing + Query 双流程
+- 交互式和批量模式
+- 错误处理和监控
+- 部署和优化
+
+**周文档**：[Week 4 详细文档](src/week4/week4_notes.md) | [完整 RAG 系统搭建](doc/Build-RAG-System.md)
+
+**产出代码**：
+- `src/week4/knowledge_base_rag.py` - 知识库问答系统（~550行）
+
+---
+
+## 🎯 本月学习成果
+
+完成本月学习后，你将具备以下能力：
+
+✅ **基础能力**
+- 理解 Embedding 的核心原理和应用场景
+- 掌握向量数据库的设计和使用
+- 能够进行基础的语义检索
+
+✅ **文档处理**
+- 能够处理多种文档格式（MD/PDF/HTML/TXT/JSON）
+- 理解不同分块策略的优缺点
+- 能够设计合理的文档处理流程
+
+✅ **高级检索**
+- 掌握 Hybrid Search 的实现原理
+- 能够设计和实现 Query Rewriting
+- 理解 Reranking 的作用和实现
+
+✅ **系统集成**
+- 能够构建完整的 RAG 系统
+- 掌握生产级代码的设计模式
+- 具备错误处理和监控能力
+
+---
+
+## 📖 深入阅读
+
+- [RAG 基础](doc/RAG-Fundamentals.md) - RAG 技术的深入讲解
+- [RAG-Fundamentals 中文](doc/RAG-Fundamentals.md) - RAG 核心概念详解
+
+---
+
+## 🚀 下一步
+
+完成 Month 03 后，你将继续学习：
+
+**Month 04: Multi-Agent 系统** - 学习多 Agent 协作模式，掌握 A2A 协议和 Agent 角色设计。
+
+---
+
+## 📊 学习进度追踪
+
+| Week | 状态 | 用时 | 完成日期 |
+|------|------|------|---------|
+| Week 1 | ⬜ | - | - |
+| Week 2 | ⬜ | - | - |
+| Week 3 | ⬜ | - | - |
+| Week 4 | ⬜ | - | - |
+
+---
+
+**开始学习**：[进入 Week 1](src/week1/README.md) 🚀
 # 📚 第 3 月 - RAG 与 Context Engineering
 
 **日期**：2026-06-07 至 2026-07-06
