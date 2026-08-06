@@ -2,9 +2,9 @@
 
 > **项目定位**：4 个月系统化学习 AI Agent 技术的实践项目
 > 
-> **技术栈**：OpenAI Agents SDK + LangGraph + RAG + Multi-Agent
-> 
-> **最后更新**：2026-07-13
+> **技术栈**：OpenAI Agents SDK + LangGraph + RAG + Multi-Agent + MCP
+>
+> **最后更新**：2026-08-03
 
 ---
 
@@ -15,9 +15,9 @@
 ### 学习路径
 
 ```
-Month 01          Month 02          Month 03          Month 04
-Agents SDK   →    LangGraph    →    RAG         →    Multi-Agent
-基础入门          图框架            检索增强          多Agent协作
+Month 01          Month 02          Month 03          Month 04          Month 05
+Agents SDK   →    LangGraph    →    RAG         →    Multi-Agent  →   MCP
+基础入门          图框架            检索增强          多Agent协作       协议与工具生态
 ```
 
 ---
@@ -102,21 +102,41 @@ Agents SDK   →    LangGraph    →    RAG         →    Multi-Agent
 **主题**：多 Agent 协作系统
 
 **核心能力**：
-- 设计 Agent 角色和分工
-- 掌握 A2A 协议
-- 理解多种协作模式
-- 构建生产级多 Agent 系统
+- 设计 Agent 角色和分工（Planner-Executor-Reviewer）
+- 掌握 A2A 协议与 Agent 间通信
+- 理解 Supervisor 层次化协作模式
+- 掌握 Agent vs MCP 架构选型决策
 
 **月级文档**：[Month 04 学习指南](month04-multi-agent/README.md)
 
 **周文档**：
 - [Week 1: 角色设计与分工](month04-multi-agent/doc/role_design.md) - Planner-Executor-Reviewer
 - [Week 2: A2A 协议](month04-multi-agent/doc/a2a_concepts.md) - Agent-to-Agent 通信
-- Week 3: 高级协作模式（待创建）
-- Week 4: 综合项目实战（待创建）
+- [Week 3: Supervisor 模式](month04-multi-agent/doc/supervisor_pattern.md) - 层次化并行协作
+- [Week 4: 架构选型与 MCP](month04-multi-agent/doc/agent_vs_mcp.md) - Agent vs Tool 决策框架
 
 **复盘笔记**：
 - [Week 2 复盘](month04-multi-agent/doc/week2_review.md)
+
+---
+
+### Month 05: MCP (Model Context Protocol)
+
+**主题**：MCP 协议与工具生态
+
+**核心能力**：
+- 理解 MCP 三层架构与三原语（Tools / Resources / Prompts）
+- 独立开发符合 MCP 标准的 Server
+- 实现 LangGraph Agent + MCP Client 的多 Server 集成
+- 掌握生产级 MCP 系统的设计要点
+
+**月级文档**：[Month 05 学习指南](month05-mcp/README.md)
+
+**周文档**：
+- [Week 1: MCP 协议基础](month05-mcp/doc/Week1-MCP-Fundamentals.md) - Server 开发与 Agent 集成
+- Week 2: 高级 Server 开发（计划中）
+- Week 3: Client 集成与编排（计划中）
+- Week 4: 生产实践与部署（计划中）
 
 ---
 
@@ -140,9 +160,15 @@ Agents SDK   →    LangGraph    →    RAG         →    Multi-Agent
 - ✅ 掌握文档处理和分块
 
 ### Month 04: Multi-Agent
-- ✅ 设计多 Agent 角色分工
-- ✅ 掌握 A2A 协议
-- ✅ 构建生产级多 Agent 系统
+- ✅ 设计多 Agent 角色分工（串行 + 并行）
+- ✅ 掌握 A2A 协议与 Agent 间通信
+- ✅ 掌握 Supervisor 层次化协作模式
+- ✅ 掌握 Agent vs MCP 架构选型决策
+
+### Month 05: MCP
+- ✅ 独立开发 MCP Server（Tools + Resources）
+- ✅ 掌握 MCP Client SDK 与多 Server 集成
+- ✅ 实现 LangGraph Agent + MCP 工具生态联动
 
 ---
 
@@ -155,6 +181,7 @@ Agents SDK   →    LangGraph    →    RAG         →    Multi-Agent
 ### 核心技术
 - **RAG (Retrieval-Augmented Generation)** - Month 03 核心主题
 - **Multi-Agent Systems** - Month 04 核心主题
+- **MCP (Model Context Protocol)** - Month 05 核心主题
 
 ### 工具和库
 - **ChromaDB** - 向量数据库
@@ -172,6 +199,7 @@ Agents SDK   →    LangGraph    →    RAG         →    Multi-Agent
 | 02 | LangGraph | 🔄 进行中 | 0/4 | 4 |
 | 03 | RAG | 🔄 进行中 | 0/4 | 4 |
 | 04 | Multi-Agent | 🔄 进行中 | 0/4 | 4 |
+| 05 | MCP | 🔄 进行中 | 1/4 | 4 |
 
 ---
 
@@ -222,9 +250,14 @@ Agents SDK   →    LangGraph    →    RAG         →    Multi-Agent
 │   └── src/week*/             ← 代码和笔记
 │
 └── month04-multi-agent/
+│   ├── README.md              ← 月级总览文档
+│   ├── doc/                   ← 周级详细文档
+│   └── src/week*/             ← 代码
+│
+└── month05-mcp/
     ├── README.md              ← 月级总览文档
     ├── doc/                   ← 周级详细文档
-    └── src/week*/             ← 代码
+    └── week01/src/            ← 代码
 ```
 
 ---
@@ -236,5 +269,7 @@ Agents SDK   →    LangGraph    →    RAG         →    Multi-Agent
 ---
 
 **开始学习之旅**：[进入 Month 01](month01-agents-sdk/README.md) 🚀
+
+**最新进度**：[进入 Month 05 MCP](month05-mcp/README.md) 🔌
 # ly-ai-roadmap-lab
 个人学习项目
